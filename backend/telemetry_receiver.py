@@ -76,7 +76,7 @@ DATABASE_PATH = BACKEND_DIR / "telemetry.db"
 # MQTT CONFIGURATION
 # ============================================================
 
-MQTT_BROKER = "10.27.22.142"
+MQTT_BROKER = "<IP>"
 MQTT_PORT = 1883
 MQTT_TOPIC = "sic/iot/telemetry"
 
