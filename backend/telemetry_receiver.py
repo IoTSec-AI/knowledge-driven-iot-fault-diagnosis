@@ -26,7 +26,7 @@ Dashboard
 
 Arduino MQTT configuration:
 
-Broker : 10.27.22.142
+Broker : localhost
 Port   : 1883
 Topic  : sic/iot/telemetry
 
@@ -76,7 +76,7 @@ DATABASE_PATH = BACKEND_DIR / "telemetry.db"
 # MQTT CONFIGURATION
 # ============================================================
 
-MQTT_BROKER = "<IP>"
+MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
 MQTT_TOPIC = "sic/iot/telemetry"
 
