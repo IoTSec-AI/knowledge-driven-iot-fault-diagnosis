@@ -1,5 +1,6 @@
 \# Knowledge-Driven IoT Fault Diagnosis Assistant
 
+![Knowledge-Driven IoT Fault Diagnosis Assistant Dashboard](dashboard-overview.png)
 
 
 A knowledge-driven IoT fault diagnosis system that combines real-time sensor telemetry, MQTT communication, rule-based fault monitoring, Retrieval-Augmented Generation (RAG), and a local Generative AI model to support IoT device diagnosis.
