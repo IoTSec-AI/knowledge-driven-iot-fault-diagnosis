@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated RAG database
+chroma_db/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Testing / cache
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ZIP archives of local project components
+*.zip

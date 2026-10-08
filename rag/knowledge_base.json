@@ -1,0 +1,119 @@
+[
+    {
+        "id": "dht22_temperature_warning",
+        "title": "DHT22 High Temperature",
+        "sensor": "DHT22",
+        "parameter": "Temperature",
+        "condition": "> 35 C",
+        "severity": "WARNING",
+        "content": "The project uses 35 C as the warning threshold for DHT22 temperature. This is a project-level environmental anomaly threshold and is not the maximum operating capability of the DHT22. A temperature above 35 C should be investigated as an elevated environmental condition."
+    },
+    {
+        "id": "dht22_temperature_critical",
+        "title": "DHT22 Critical Temperature",
+        "sensor": "DHT22",
+        "parameter": "Temperature",
+        "condition": "> 45 C",
+        "severity": "CRITICAL",
+        "content": "The project treats DHT22 temperature above 45 C as critical. This is a project diagnostic threshold intended to identify an unusually hot environment."
+    },
+    {
+        "id": "dht22_humidity_warning",
+        "title": "DHT22 High Humidity",
+        "sensor": "DHT22",
+        "parameter": "Humidity",
+        "condition": "> 70 percent RH",
+        "severity": "WARNING",
+        "content": "The project uses 70 percent relative humidity as the warning threshold. Sustained high humidity may indicate a damp environmental condition and can be relevant when diagnosing an IoT installation."
+    },
+    {
+        "id": "dht22_humidity_critical",
+        "title": "DHT22 Critical Humidity",
+        "sensor": "DHT22",
+        "parameter": "Humidity",
+        "condition": "> 85 percent RH",
+        "severity": "CRITICAL",
+        "content": "The project treats humidity above 85 percent RH as critical. This is a project-level diagnostic threshold rather than a sensor measurement limit."
+    },
+    {
+        "id": "pir_motion_warning",
+        "title": "Persistent PIR Motion",
+        "sensor": "PIR",
+        "parameter": "Motion duration",
+        "condition": ">= 10 seconds",
+        "severity": "WARNING",
+        "content": "The PIR sensor is digital and indicates whether motion is detected. The project therefore evaluates persistence over time rather than treating PIR as a numerical measurement. Continuous motion for at least 10 seconds generates a warning."
+    },
+    {
+        "id": "pir_motion_critical",
+        "title": "Extended PIR Motion",
+        "sensor": "PIR",
+        "parameter": "Motion duration",
+        "condition": ">= 30 seconds",
+        "severity": "CRITICAL",
+        "content": "Continuous PIR motion for at least 30 seconds is treated as a critical project event. The duration-based rule helps distinguish a persistent event from a short normal movement."
+    },
+    {
+        "id": "hcsr04_warning",
+        "title": "Close Object Detection",
+        "sensor": "HC-SR04",
+        "parameter": "Distance",
+        "condition": "10 to 20 cm",
+        "severity": "WARNING",
+        "content": "The project treats an HC-SR04 measured distance between 10 cm and 20 cm as a warning because an object is approaching the monitored area."
+    },
+    {
+        "id": "hcsr04_critical",
+        "title": "Very Close Object Detection",
+        "sensor": "HC-SR04",
+        "parameter": "Distance",
+        "condition": "<= 10 cm",
+        "severity": "CRITICAL",
+        "content": "The project treats an HC-SR04 distance of 10 cm or less as critical because the monitored object is very close."
+    },
+    {
+        "id": "lm393_warning",
+        "title": "Persistent Sound Threshold",
+        "sensor": "LM393",
+        "parameter": "Sound event duration",
+        "condition": ">= 2 seconds",
+        "severity": "WARNING",
+        "content": "The LM393 sound module is treated as a threshold detector rather than a calibrated sound-level meter. A sound threshold event persisting for at least 2 seconds produces a warning."
+    },
+    {
+        "id": "lm393_critical",
+        "title": "Extended Sound Threshold",
+        "sensor": "LM393",
+        "parameter": "Sound event duration",
+        "condition": ">= 5 seconds",
+        "severity": "CRITICAL",
+        "content": "A continuous LM393 sound threshold event lasting at least 5 seconds is treated as critical. The module threshold should be adjusted using its onboard potentiometer."
+    },
+    {
+        "id": "a3144_low_rpm",
+        "title": "Low Motor RPM",
+        "sensor": "A3144",
+        "parameter": "RPM",
+        "condition": "< 180 RPM",
+        "severity": "WARNING",
+        "content": "The A3144 Hall-effect sensor measures magnetic pulses from the rotating motor. The project expects approximately 200 RPM from the geared motor and uses 180 RPM as the warning threshold. Low RPM can indicate mechanical load, alignment issues, insufficient motor drive, or magnet detection problems."
+    },
+    {
+        "id": "ina219_information",
+        "title": "INA219 Electrical Measurement",
+        "sensor": "INA219",
+        "parameter": "Voltage/current/power",
+        "condition": "Informational",
+        "severity": "INFO",
+        "content": "The INA219 in this project measures the small red LED and 10K ohm resistor load. Its voltage, current, and power values must not be interpreted as measurements of the 12 V motor supply or motor current. INA219 data is informational in the current project configuration."
+    },
+    {
+        "id": "telemetry_quality",
+        "title": "Telemetry Quality",
+        "sensor": "System",
+        "parameter": "Telemetry",
+        "condition": "Missing or invalid value",
+        "severity": "INFO",
+        "content": "Invalid or missing sensor values should be treated as telemetry-quality issues. The diagnostic assistant should not invent a sensor reading when a value is unavailable."
+    }
+]

@@ -1,0 +1,6775 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Knowledge-Driven IoT Fault Diagnosis Assistant
+    </title>
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        :root {
+            --navy: #101827;
+            --navy-2: #182235;
+
+            --blue: #2454d8;
+            --blue-2: #3569ef;
+
+            --green: #18a957;
+            --green-bg: #e4f8ed;
+
+            --yellow: #d99600;
+            --yellow-bg: #fff4d8;
+
+            --red: #dc3f4f;
+            --red-bg: #fde8eb;
+
+            --text: #101828;
+            --muted: #64748b;
+
+            --border: #dce3ec;
+            --background: #f5f7fa;
+            --white: #ffffff;
+
+            --shadow:
+                0 6px 20px rgba(
+                    15,
+                    23,
+                    42,
+                    0.055
+                );
+
+            --radius: 15px;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                Inter,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background:
+                var(--background);
+
+            color:
+                var(--text);
+
+            font-size: 14px;
+
+            overflow-x: hidden;
+        }
+
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+
+        /* =====================================================
+           APPLICATION
+        ===================================================== */
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+            width: 270px;
+
+            min-width: 270px;
+
+            min-height: 100vh;
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            background:
+                var(--navy);
+
+            color: white;
+
+            padding:
+                26px 18px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            z-index: 50;
+        }
+
+
+        .brand {
+            padding:
+                2px 10px 24px;
+
+            border-bottom:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.10
+                );
+        }
+
+
+        .brand-row {
+            display: flex;
+
+            gap: 12px;
+
+            align-items: center;
+        }
+
+
+        .brand-icon {
+            width: 52px;
+            height: 52px;
+
+            flex-shrink: 0;
+
+            border-radius: 14px;
+
+            background:
+                var(--blue);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 25px;
+        }
+
+
+        .brand h1 {
+            margin: 0;
+
+            font-size: 18px;
+
+            line-height: 1.2;
+
+            font-weight: 750;
+        }
+
+
+        .brand p {
+            margin:
+                5px 0 0;
+
+            color:
+                #aebbd0;
+
+            font-size: 12px;
+        }
+
+
+        .navigation {
+            margin-top: 25px;
+        }
+
+
+        .nav-button {
+            width: 100%;
+
+            border: 0;
+
+            background:
+                transparent;
+
+            color:
+                #aebbd0;
+
+            padding:
+                13px 14px;
+
+            margin-bottom:
+                7px;
+
+            border-radius:
+                12px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            text-align: left;
+
+            font-size: 14px;
+
+            transition:
+                background .2s ease,
+                color .2s ease;
+        }
+
+
+        .nav-button:hover {
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .07
+                );
+
+            color:
+                white;
+        }
+
+
+        .nav-button.active {
+            background:
+                var(--blue);
+
+            color:
+                white;
+
+            box-shadow:
+                0 10px 24px
+                rgba(
+                    36,
+                    84,
+                    216,
+                    .22
+                );
+        }
+
+
+        .nav-icon {
+            width: 23px;
+
+            flex-shrink: 0;
+
+            text-align: center;
+
+            font-size: 17px;
+        }
+
+
+        .sidebar-footer {
+            margin-top: auto;
+        }
+
+
+        .connection-box {
+            padding: 15px;
+
+            border-radius: 13px;
+
+            background:
+                #1b2536;
+        }
+
+
+        .connection-row {
+            display: flex;
+
+            gap: 10px;
+
+            align-items: center;
+        }
+
+
+        .connection-dot {
+            width: 10px;
+            height: 10px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background:
+                #64748b;
+        }
+
+
+        .connection-dot.online {
+            background:
+                var(--green);
+
+            box-shadow:
+                0 0 0 5px
+                rgba(
+                    24,
+                    169,
+                    87,
+                    .12
+                );
+        }
+
+
+        .connection-title {
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .connection-text {
+            margin-top: 4px;
+
+            font-size: 10px;
+
+            color:
+                #9eacc0;
+
+            line-height: 1.4;
+        }
+
+
+        /* =====================================================
+           MAIN
+        ===================================================== */
+
+        .main {
+            margin-left: 270px;
+
+            width:
+                calc(
+                    100% - 270px
+                );
+
+            min-width: 0;
+
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+            min-height: 82px;
+
+            background:
+                white;
+
+            border-bottom:
+                1px solid
+                var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding:
+                14px 30px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 40;
+        }
+
+
+        .breadcrumb {
+            color:
+                #6c7b91;
+
+            font-size: 11px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .page-title {
+            margin: 0;
+
+            font-size: 24px;
+
+            line-height: 1.2;
+
+            font-weight: 750;
+        }
+
+
+        .top-info {
+            display: flex;
+
+            gap: 28px;
+
+            align-items: center;
+
+            flex-shrink: 0;
+        }
+
+
+        .top-info-item {
+            display: flex;
+
+            gap: 9px;
+
+            align-items: center;
+        }
+
+
+        .top-info-label {
+            font-size: 9px;
+
+            letter-spacing:
+                1.1px;
+
+            color:
+                #718096;
+
+            font-weight: 800;
+        }
+
+
+        .top-info-value {
+            display: block;
+
+            margin-top: 2px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .content {
+            padding:
+                28px 30px 40px;
+
+            max-width:
+                1600px;
+
+            margin:
+                0 auto;
+        }
+
+
+        .tab {
+            display: none;
+
+            min-width: 0;
+        }
+
+
+        .tab.active {
+            display: block;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero-title {
+            margin-bottom: 22px;
+
+            min-width: 0;
+        }
+
+
+        .hero-label {
+            color:
+                #60708a;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            letter-spacing:
+                1.4px;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        .hero-title h2 {
+            margin:
+                7px 0 7px;
+
+            font-size: 30px;
+
+            line-height: 1.2;
+
+            letter-spacing:
+                -.5px;
+
+            font-weight: 750;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        .hero-title p {
+            margin: 0;
+
+            color:
+                #60708a;
+
+            font-size: 13px;
+
+            line-height: 1.55;
+
+            max-width:
+                1100px;
+        }
+
+
+        /* =====================================================
+           GRIDS
+        ===================================================== */
+
+        .grid-3 {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 18px;
+        }
+
+
+        .grid-2 {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 18px;
+        }
+
+
+        /* =====================================================
+           GENERAL CARD
+        ===================================================== */
+
+        .card {
+            background:
+                white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                var(--radius);
+
+            padding:
+                21px;
+
+            box-shadow:
+                var(--shadow);
+
+            min-width: 0;
+
+            overflow: hidden;
+        }
+
+
+        .card-title {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                flex-start;
+
+            gap: 12px;
+
+            margin-bottom:
+                17px;
+
+            min-width: 0;
+        }
+
+
+        .card-title > div {
+            min-width: 0;
+        }
+
+
+        .eyebrow {
+            color:
+                #62718a;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing:
+                1.35px;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        .card h3 {
+            margin:
+                5px 0 0;
+
+            font-size: 19px;
+
+            line-height: 1.25;
+
+            font-weight: 700;
+        }
+
+
+        .badge {
+            padding:
+                6px 10px;
+
+            border-radius:
+                20px;
+
+            font-size: 9px;
+
+            line-height: 1;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+
+            flex-shrink: 0;
+        }
+
+
+        .badge.normal {
+            background:
+                var(--green-bg);
+
+            color:
+                var(--green);
+        }
+
+
+        .badge.warning {
+            background:
+                var(--yellow-bg);
+
+            color:
+                #a36a00;
+        }
+
+
+        .badge.critical {
+            background:
+                var(--red-bg);
+
+            color:
+                var(--red);
+        }
+
+
+        .badge.unknown {
+            background:
+                #edf1f5;
+
+            color:
+                #66758b;
+        }
+
+
+        /* =====================================================
+           HEALTH CARD
+        ===================================================== */
+
+        .health-card {
+            min-height:
+                285px;
+        }
+
+
+        .health-layout {
+            display: grid;
+
+            grid-template-columns:
+                145px
+                minmax(
+                    0,
+                    1fr
+                );
+
+            gap: 20px;
+
+            align-items: center;
+
+            min-width: 0;
+        }
+
+
+        .health-ring {
+            width: 135px;
+            height: 135px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background:
+                conic-gradient(
+                    var(--green)
+                    var(--health, 0%),
+                    #e7edf4 0
+                );
+
+            display: grid;
+
+            place-items: center;
+
+            position: relative;
+        }
+
+
+        .health-ring::before {
+            content: "";
+
+            position: absolute;
+
+            inset: 11px;
+
+            border-radius: 50%;
+
+            background:
+                white;
+        }
+
+
+        .health-number {
+            position: relative;
+
+            z-index: 1;
+
+            text-align: center;
+
+            white-space: nowrap;
+        }
+
+
+        .health-number strong {
+            font-size: 32px;
+
+            font-weight: 750;
+        }
+
+
+        .health-number span {
+            font-size: 12px;
+
+            color:
+                #718096;
+        }
+
+
+        .health-copy {
+            min-width: 0;
+
+            overflow: hidden;
+        }
+
+
+        .health-copy h4 {
+            margin:
+                0 0 7px;
+
+            font-size: 20px;
+
+            line-height: 1.25;
+
+            font-weight: 700;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        .health-copy p {
+            margin: 0;
+
+            color:
+                #64748b;
+
+            line-height: 1.5;
+
+            font-size: 12px;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        .health-stats {
+            display: flex;
+
+            gap: 22px;
+
+            margin-top: 16px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .health-stat {
+            min-width: 55px;
+        }
+
+
+        .health-stat span {
+            display: block;
+
+            font-size: 8px;
+
+            text-transform:
+                uppercase;
+
+            color:
+                #718096;
+
+            font-weight: 800;
+
+            letter-spacing:
+                .7px;
+        }
+
+
+        .health-stat strong {
+            display: block;
+
+            margin-top: 4px;
+
+            font-size: 17px;
+
+            line-height: 1.2;
+        }
+
+
+        /* =====================================================
+           MACHINE CARD
+        ===================================================== */
+
+        .machine-card {
+            min-height:
+                285px;
+        }
+
+
+        .machine-state {
+            font-size: 30px;
+
+            line-height: 1.1;
+
+            font-weight: 750;
+
+            margin:
+                20px 0 7px;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        .machine-detail {
+            color:
+                #64748b;
+
+            font-size: 12px;
+
+            line-height: 1.45;
+
+            max-width:
+                310px;
+        }
+
+
+        .mini-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 9px;
+
+            margin-top: 20px;
+        }
+
+
+        .mini {
+            background:
+                #f6f8fb;
+
+            padding:
+                12px;
+
+            border-radius:
+                11px;
+
+            min-width: 0;
+        }
+
+
+        .mini span {
+            display: block;
+
+            color:
+                #718096;
+
+            font-size: 9px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .5px;
+        }
+
+
+        .mini strong {
+            display: block;
+
+            margin-top: 6px;
+
+            font-size: 16px;
+
+            line-height: 1.25;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        /* =====================================================
+           DATA QUALITY
+        ===================================================== */
+
+        .quality-card {
+            min-height:
+                285px;
+        }
+
+
+        .quality-number {
+            font-size: 34px;
+
+            line-height: 1;
+
+            font-weight: 750;
+
+            margin:
+                30px 0 18px;
+        }
+
+
+        .quality-number small {
+            font-size: 12px;
+
+            color:
+                #64748b;
+
+            font-weight: 600;
+        }
+
+
+        .meter {
+            height: 7px;
+
+            border-radius: 20px;
+
+            background:
+                #e9eef4;
+
+            margin-top:
+                16px;
+
+            overflow:
+                hidden;
+        }
+
+
+        .meter-fill {
+            height: 100%;
+
+            width: 0%;
+
+            border-radius:
+                inherit;
+
+            background:
+                var(--green);
+
+            transition:
+                width .3s ease;
+        }
+
+
+        .live-status {
+            color:
+                #64748b;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           SECTION HEADING
+        ===================================================== */
+
+        .section-heading {
+            margin:
+                27px 0 14px;
+        }
+
+
+        .section-heading h3 {
+            margin:
+                4px 0 0;
+
+            font-size: 20px;
+
+            line-height: 1.25;
+        }
+
+
+        /* =====================================================
+           SENSOR GRID
+        ===================================================== */
+
+        .sensor-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 16px;
+        }
+
+
+        .sensor-card {
+            background:
+                white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                var(--radius);
+
+            padding:
+                18px;
+
+            box-shadow:
+                var(--shadow);
+
+            cursor: pointer;
+
+            transition:
+                transform .2s ease,
+                box-shadow .2s ease;
+
+            min-width: 0;
+
+            overflow: hidden;
+        }
+
+
+        .sensor-card:hover {
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 25px
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .08
+                );
+        }
+
+
+        .sensor-top {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                flex-start;
+
+            gap: 10px;
+
+            min-width: 0;
+        }
+
+
+        .sensor-top > div {
+            min-width: 0;
+        }
+
+
+        .sensor-name {
+            margin:
+                6px 0 0;
+
+            font-size: 16px;
+
+            line-height: 1.25;
+
+            font-weight: 700;
+        }
+
+
+        .sensor-category {
+            color:
+                #64748b;
+
+            font-size: 9px;
+
+            letter-spacing:
+                1.1px;
+
+            font-weight: 800;
+        }
+
+
+        .sensor-value {
+            margin-top:
+                19px;
+
+            font-size:
+                27px;
+
+            line-height:
+                1.15;
+
+            font-weight:
+                750;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        .sensor-value small {
+            font-size:
+                12px;
+
+            color:
+                #718096;
+
+            font-weight:
+                600;
+        }
+
+
+        .sensor-description {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            gap: 10px;
+
+            margin-top:
+                9px;
+
+            font-size:
+                9px;
+
+            line-height:
+                1.35;
+
+            color:
+                #718096;
+        }
+
+
+        .sensor-description span:last-child {
+            text-align: right;
+        }
+
+
+        /* =====================================================
+           LIVE MONITORING
+        ===================================================== */
+
+        .monitor-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap: 16px;
+        }
+
+
+        .live-value {
+            font-size:
+                31px;
+
+            line-height:
+                1.15;
+
+            font-weight:
+                750;
+
+            margin:
+                16px 0 7px;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        .raw-box {
+            background:
+                #101827;
+
+            color:
+                #d8e4f3;
+
+            border-radius:
+                12px;
+
+            padding:
+                16px;
+
+            overflow:
+                auto;
+
+            max-height:
+                430px;
+
+            font-family:
+                Consolas,
+                "Courier New",
+                monospace;
+
+            font-size:
+                11px;
+
+            line-height:
+                1.6;
+        }
+
+
+        .pipeline {
+            display: grid;
+
+            grid-template-columns:
+                1fr 30px 1fr;
+
+            gap: 8px;
+
+            margin-top:
+                12px;
+        }
+
+
+        .pipeline-step {
+            text-align:
+                center;
+
+            padding:
+                13px 8px;
+
+            border-radius:
+                10px;
+
+            background:
+                #f6f8fb;
+
+            font-size:
+                11px;
+
+            font-weight:
+                700;
+
+            line-height:
+                1.3;
+        }
+
+
+        .pipeline-arrow {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            color:
+                #75849b;
+
+            font-size:
+                16px;
+        }
+
+
+        /* =====================================================
+           DIAGNOSTICS
+        ===================================================== */
+
+        .diagnostic-list {
+            display:
+                grid;
+
+            gap:
+                10px;
+        }
+
+
+        .diagnostic-item {
+            padding:
+                13px 15px;
+
+            border-radius:
+                11px;
+
+            background:
+                #f7f9fb;
+
+            border-left:
+                4px solid
+                var(--green);
+
+            min-width:
+                0;
+        }
+
+
+        .diagnostic-item.warning {
+            border-left-color:
+                var(--yellow);
+        }
+
+
+        .diagnostic-item.critical {
+            border-left-color:
+                var(--red);
+        }
+
+
+        .diagnostic-item strong {
+            display:
+                block;
+
+            margin-bottom:
+                4px;
+
+            font-size:
+                13px;
+
+            line-height:
+                1.35;
+        }
+
+
+        .diagnostic-item span {
+            color:
+                #64748b;
+
+            font-size:
+                12px;
+
+            line-height:
+                1.5;
+        }
+
+
+        .ai-panel {
+            background:
+                linear-gradient(
+                    135deg,
+                    #101827,
+                    #1d2d48
+                );
+
+            color:
+                white;
+
+            border-radius:
+                var(--radius);
+
+            padding:
+                21px;
+
+            margin-top:
+                18px;
+
+            min-width:
+                0;
+        }
+
+
+        .ai-header {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+
+            min-width:
+                0;
+        }
+
+
+        .ai-header > div {
+            min-width:
+                0;
+        }
+
+
+        .ai-header h3 {
+            margin:
+                5px 0;
+
+            font-size:
+                19px;
+
+            line-height:
+                1.3;
+        }
+
+
+        .ai-header p {
+            margin:
+                0;
+
+            color:
+                #aebbd0;
+
+            font-size:
+                11px;
+
+            line-height:
+                1.5;
+        }
+
+
+        .ai-button {
+            border:
+                0;
+
+            border-radius:
+                9px;
+
+            background:
+                var(--blue);
+
+            color:
+                white;
+
+            padding:
+                10px 15px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                700;
+
+            white-space:
+                nowrap;
+
+            flex-shrink:
+                0;
+        }
+
+
+        .ai-button:hover {
+            background:
+                var(--blue-2);
+        }
+
+
+        .ai-button:disabled {
+            opacity:
+                .6;
+
+            cursor:
+                wait;
+        }
+
+
+        .ai-result {
+            margin-top:
+                18px;
+
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .06
+                );
+
+            border-radius:
+                11px;
+
+            padding:
+                16px;
+
+            min-height:
+                110px;
+
+            line-height:
+                1.65;
+
+            font-size:
+                12px;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        .ai-result h4 {
+            color:
+                #91b1ff;
+
+            margin:
+                15px 0 5px;
+
+            font-size:
+                13px;
+        }
+
+
+        .ai-result ul {
+            padding-left:
+                20px;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-wrapper {
+            overflow:
+                auto;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                11px;
+        }
+
+
+        table {
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+
+            background:
+                white;
+
+            min-width:
+                850px;
+        }
+
+
+        th,
+        td {
+            padding:
+                11px 13px;
+
+            border-bottom:
+                1px solid
+                #edf1f5;
+
+            text-align:
+                left;
+
+            font-size:
+                11px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        th {
+            background:
+                #f6f8fb;
+
+            color:
+                #53627a;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .7px;
+
+            font-size:
+                9px;
+        }
+
+
+        /* =====================================================
+           TOOLBAR
+        ===================================================== */
+
+        .toolbar {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            gap:
+                12px;
+
+            margin-bottom:
+                16px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .toolbar input {
+            padding:
+                9px 12px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                8px;
+
+            outline:
+                none;
+
+            min-width:
+                250px;
+
+            font-size:
+                12px;
+        }
+
+
+        .filter-buttons {
+            display:
+                flex;
+
+            gap:
+                6px;
+        }
+
+
+        .filter-button {
+            border:
+                1px solid
+                var(--border);
+
+            background:
+                white;
+
+            border-radius:
+                7px;
+
+            padding:
+                8px 11px;
+
+            font-size:
+                10px;
+        }
+
+
+        .filter-button.active {
+            background:
+                var(--blue);
+
+            color:
+                white;
+
+            border-color:
+                var(--blue);
+        }
+
+
+        /* =====================================================
+           KNOWLEDGE
+        ===================================================== */
+
+        .knowledge-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap:
+                16px;
+        }
+
+
+        .knowledge-card {
+            background:
+                white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius:
+                13px;
+
+            padding:
+                18px;
+
+            box-shadow:
+                var(--shadow);
+
+            cursor:
+                pointer;
+
+            min-width:
+                0;
+        }
+
+
+        .knowledge-card:hover {
+            border-color:
+                #aabcf4;
+        }
+
+
+        .knowledge-icon {
+            width:
+                38px;
+
+            height:
+                38px;
+
+            border-radius:
+                10px;
+
+            background:
+                #e9efff;
+
+            color:
+                var(--blue);
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            font-weight:
+                800;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .knowledge-card h3 {
+            margin:
+                6px 0;
+
+            font-size:
+                15px;
+
+            line-height:
+                1.35;
+        }
+
+
+        .knowledge-card p {
+            color:
+                #64748b;
+
+            font-size:
+                11px;
+
+            line-height:
+                1.55;
+
+            margin:
+                0;
+        }
+
+
+        /* =====================================================
+           CHARTS
+        ===================================================== */
+
+        .chart {
+            width:
+                100%;
+
+            height:
+                250px;
+
+            border:
+                1px solid
+                #e4e9ef;
+
+            border-radius:
+                11px;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    #fff,
+                    #f8fafc
+                );
+
+            overflow:
+                hidden;
+        }
+
+
+        .chart svg {
+            width:
+                100%;
+
+            height:
+                100%;
+        }
+
+
+        .chart-line {
+            fill:
+                none;
+
+            stroke:
+                var(--blue);
+
+            stroke-width:
+                3;
+
+            stroke-linecap:
+                round;
+
+            stroke-linejoin:
+                round;
+        }
+
+
+        .chart-grid {
+            stroke:
+                #e6ebf1;
+
+            stroke-width:
+                1;
+        }
+
+
+        .chart-point {
+            fill:
+                var(--blue);
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal {
+            position:
+                fixed;
+
+            inset:
+                0;
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    .58
+                );
+
+            display:
+                none;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            z-index:
+                100;
+        }
+
+
+        .modal.open {
+            display:
+                flex;
+        }
+
+
+        .modal-box {
+            background:
+                white;
+
+            border-radius:
+                16px;
+
+            width:
+                min(
+                    680px,
+                    calc(
+                        100% - 36px
+                    )
+                );
+
+            max-height:
+                85vh;
+
+            overflow:
+                auto;
+
+            padding:
+                25px;
+
+            position:
+                relative;
+        }
+
+
+        .modal-close {
+            position:
+                absolute;
+
+            right:
+                15px;
+
+            top:
+                15px;
+
+            border:
+                0;
+
+            background:
+                #edf1f5;
+
+            width:
+                32px;
+
+            height:
+                32px;
+
+            border-radius:
+                50%;
+
+            font-size:
+                17px;
+        }
+
+
+        .modal-box h2 {
+            margin:
+                7px 35px 10px 0;
+
+            font-size:
+                22px;
+
+            line-height:
+                1.3;
+        }
+
+
+        .modal-box p {
+            color:
+                #64748b;
+
+            line-height:
+                1.65;
+
+            font-size:
+                13px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (
+            max-width: 1250px
+        ) {
+
+            .sidebar {
+                width:
+                    240px;
+
+                min-width:
+                    240px;
+            }
+
+
+            .main {
+                margin-left:
+                    240px;
+
+                width:
+                    calc(
+                        100% - 240px
+                    );
+            }
+
+
+            .grid-3 {
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(
+                            0,
+                            1fr
+                        )
+                    );
+            }
+
+
+            .monitor-grid {
+                grid-template-columns:
+                    repeat(
+                        3,
+                        minmax(
+                            0,
+                            1fr
+                        )
+                    );
+            }
+
+
+            .sensor-grid {
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(
+                            0,
+                            1fr
+                        )
+                    );
+            }
+
+
+            .knowledge-grid {
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(
+                            0,
+                            1fr
+                        )
+                    );
+            }
+
+        }
+
+
+        @media (
+            max-width: 950px
+        ) {
+
+            .sidebar {
+                position:
+                    static;
+
+                width:
+                    100%;
+
+                min-width:
+                    100%;
+
+                min-height:
+                    auto;
+            }
+
+
+            .app {
+                display:
+                    block;
+            }
+
+
+            .main {
+                margin-left:
+                    0;
+
+                width:
+                    100%;
+            }
+
+
+            .navigation {
+                display:
+                    grid;
+
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(
+                            0,
+                            1fr
+                        )
+                    );
+
+                gap:
+                    5px;
+            }
+
+
+            .nav-button {
+                margin:
+                    0;
+            }
+
+
+            .sidebar-footer {
+                margin-top:
+                    18px;
+            }
+
+
+            .topbar {
+                position:
+                    static;
+
+                padding:
+                    16px 20px;
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .top-info {
+                width:
+                    100%;
+
+                justify-content:
+                    space-between;
+            }
+
+
+            .content {
+                padding:
+                    22px 20px 35px;
+            }
+
+
+            .health-layout {
+                grid-template-columns:
+                    130px
+                    minmax(
+                        0,
+                        1fr
+                    );
+
+                gap:
+                    15px;
+            }
+
+
+            .health-ring {
+                width:
+                    120px;
+
+                height:
+                    120px;
+            }
+
+
+            .health-copy h4 {
+                font-size:
+                    18px;
+            }
+
+        }
+
+
+        @media (
+            max-width: 650px
+        ) {
+
+            .grid-3,
+            .grid-2,
+            .sensor-grid,
+            .monitor-grid,
+            .knowledge-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .hero-title h2 {
+                font-size:
+                    25px;
+            }
+
+
+            .health-layout {
+                grid-template-columns:
+                    1fr;
+
+                justify-items:
+                    center;
+            }
+
+
+            .health-copy {
+                width:
+                    100%;
+
+                text-align:
+                    center;
+            }
+
+
+            .health-stats {
+                justify-content:
+                    center;
+            }
+
+
+            .mini-grid {
+                grid-template-columns:
+                    repeat(
+                        3,
+                        minmax(
+                            0,
+                            1fr
+                        )
+                    );
+            }
+
+
+            .ai-header {
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+            }
+
+
+            .ai-button {
+                width:
+                    100%;
+            }
+
+
+            .pipeline {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .pipeline-arrow {
+                transform:
+                    rotate(90deg);
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-row">
+
+                <div class="brand-icon">
+                    🧠
+                </div>
+
+                <div>
+
+                    <h1>
+                        IoT Diagnosis
+                    </h1>
+
+                    <p>
+                        Knowledge-Driven Assistant
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <nav class="navigation">
+
+            <button
+                class="nav-button active"
+                data-tab="overview"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Overview</span>
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-tab="monitoring"
+            >
+                <span class="nav-icon">◉</span>
+                <span>Live Monitoring</span>
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-tab="diagnostics"
+            >
+                <span class="nav-icon">⚕</span>
+                <span>Diagnostics</span>
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-tab="trends"
+            >
+                <span class="nav-icon">↗</span>
+                <span>Trends &amp; Analytics</span>
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-tab="events"
+            >
+                <span class="nav-icon">⚠</span>
+                <span>Events</span>
+            </button>
+
+
+            <button
+                class="nav-button"
+                data-tab="knowledge"
+            >
+                <span class="nav-icon">▤</span>
+                <span>Knowledge Base</span>
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <div class="connection-box">
+
+                <div class="connection-row">
+
+                    <span
+                        class="connection-dot"
+                        id="connection-dot"
+                    ></span>
+
+                    <div>
+
+                        <div class="connection-title">
+                            System Connection
+                        </div>
+
+                        <div
+                            class="connection-text"
+                            id="connection-text"
+                        >
+                            Connecting...
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <header class="topbar">
+
+            <div>
+
+                <div class="breadcrumb">
+                    SIC IoT Capstone / Dashboard
+                </div>
+
+                <h2
+                    class="page-title"
+                    id="page-title"
+                >
+                    Overview
+                </h2>
+
+            </div>
+
+
+            <div class="top-info">
+
+                <div class="top-info-item">
+
+                    <span
+                        class="connection-dot"
+                        id="header-dot"
+                    ></span>
+
+                    <div>
+
+                        <div class="top-info-label">
+                            DEVICE
+                        </div>
+
+                        <strong
+                            class="top-info-value"
+                            id="header-device"
+                        >
+                            --
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="top-info-item">
+
+                    <div>
+
+                        <div class="top-info-label">
+                            LAST UPDATE
+                        </div>
+
+                        <strong
+                            class="top-info-value"
+                            id="header-time"
+                        >
+                            --
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div class="content">
+
+
+            <!-- =================================================
+                 OVERVIEW
+            ================================================== -->
+
+            <section
+                class="tab active"
+                id="tab-overview"
+            >
+
+                <div class="hero-title">
+
+                    <div class="hero-label">
+                        SYSTEM OVERVIEW
+                    </div>
+
+                    <h2>
+                        Knowledge-Driven IoT Fault Diagnosis Assistant
+                    </h2>
+
+                    <p>
+                        Real-time monitoring of the IoT device,
+                        environment and motor system using sensor
+                        telemetry, rule-based diagnosis and RAG + local
+                        LLM analysis.
+                    </p>
+
+                </div>
+
+
+                <div class="grid-3">
+
+
+                    <!-- HEALTH -->
+
+                    <div class="card health-card">
+
+                        <div class="card-title">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    CURRENT SYSTEM RISK
+                                </div>
+
+                                <h3>
+                                    Overall Health
+                                </h3>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="overview-health-badge"
+                            >
+                                UNKNOWN
+                            </span>
+
+                        </div>
+
+
+                        <div class="health-layout">
+
+                            <div
+                                class="health-ring"
+                                id="health-ring"
+                            >
+
+                                <div class="health-number">
+
+                                    <strong
+                                        id="health-score"
+                                    >
+                                        --
+                                    </strong>
+
+                                    <span>
+                                        /100
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="health-copy">
+
+                                <h4
+                                    id="health-title"
+                                >
+                                    Waiting for telemetry
+                                </h4>
+
+                                <p
+                                    id="health-message"
+                                >
+                                    The dashboard is waiting for telemetry
+                                    from the IoT system.
+                                </p>
+
+
+                                <div class="health-stats">
+
+                                    <div class="health-stat">
+
+                                        <span>
+                                            Issues
+                                        </span>
+
+                                        <strong
+                                            id="health-issues"
+                                        >
+                                            0
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="health-stat">
+
+                                        <span>
+                                            Data Quality
+                                        </span>
+
+                                        <strong
+                                            id="health-quality"
+                                        >
+                                            --
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MOTOR -->
+
+                    <div class="card machine-card">
+
+                        <div class="card-title">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    MACHINE
+                                </div>
+
+                                <h3>
+                                    Motor State
+                                </h3>
+
+                            </div>
+
+                            <span
+                                class="badge normal"
+                                id="motor-badge"
+                            >
+                                NORMAL
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="machine-state"
+                            id="motor-state"
+                        >
+                            --
+                        </div>
+
+
+                        <div
+                            class="machine-detail"
+                            id="motor-detail"
+                        >
+                            L293D controlled motor
+                        </div>
+
+
+                        <div class="mini-grid">
+
+                            <div class="mini">
+
+                                <span>
+                                    RPM
+                                </span>
+
+                                <strong
+                                    id="overview-rpm"
+                                >
+                                    --
+                                </strong>
+
+                            </div>
+
+
+                            <div class="mini">
+
+                                <span>
+                                    INA219 V
+                                </span>
+
+                                <strong
+                                    id="overview-voltage"
+                                >
+                                    --
+                                </strong>
+
+                            </div>
+
+
+                            <div class="mini">
+
+                                <span>
+                                    INA219 I
+                                </span>
+
+                                <strong
+                                    id="overview-current"
+                                >
+                                    --
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- QUALITY -->
+
+                    <div class="card quality-card">
+
+                        <div class="card-title">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    TELEMETRY
+                                </div>
+
+                                <h3>
+                                    Data Quality
+                                </h3>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="quality-badge"
+                            >
+                                --
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="quality-number"
+                            id="quality-score"
+                        >
+                            --
+                        </div>
+
+
+                        <div class="meter">
+
+                            <div
+                                class="meter-fill"
+                                id="quality-meter"
+                            ></div>
+
+                        </div>
+
+
+                        <p class="live-status">
+                            Valid fields received from the current
+                            telemetry record.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="section-heading">
+
+                    <div class="hero-label">
+                        PARAMETERS
+                    </div>
+
+                    <h3>
+                        Current Sensor Readings
+                    </h3>
+
+                </div>
+
+
+                <div class="sensor-grid">
+
+
+                    <!-- TEMPERATURE -->
+
+                    <div
+                        class="sensor-card"
+                        data-sensor="temperature"
+                    >
+
+                        <div class="sensor-top">
+
+                            <div>
+
+                                <div class="sensor-category">
+                                    DHT22
+                                </div>
+
+                                <div class="sensor-name">
+                                    Temperature
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="temperature-badge"
+                            >
+                                UNKNOWN
+                            </span>
+
+                        </div>
+
+
+                        <div class="sensor-value">
+
+                            <span
+                                id="temperature-value"
+                            >
+                                --
+                            </span>
+
+                            <small>
+                                °C
+                            </small>
+
+                        </div>
+
+
+                        <div class="meter">
+
+                            <div
+                                class="meter-fill"
+                                id="temperature-meter"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="sensor-description">
+
+                            <span>
+                                Normal ≤35°C
+                            </span>
+
+                            <span>
+                                Critical &gt;45°C
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- HUMIDITY -->
+
+                    <div
+                        class="sensor-card"
+                        data-sensor="humidity"
+                    >
+
+                        <div class="sensor-top">
+
+                            <div>
+
+                                <div class="sensor-category">
+                                    DHT22
+                                </div>
+
+                                <div class="sensor-name">
+                                    Humidity
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="humidity-badge"
+                            >
+                                UNKNOWN
+                            </span>
+
+                        </div>
+
+
+                        <div class="sensor-value">
+
+                            <span
+                                id="humidity-value"
+                            >
+                                --
+                            </span>
+
+                            <small>
+                                % RH
+                            </small>
+
+                        </div>
+
+
+                        <div class="meter">
+
+                            <div
+                                class="meter-fill"
+                                id="humidity-meter"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="sensor-description">
+
+                            <span>
+                                Normal ≤70%
+                            </span>
+
+                            <span>
+                                Critical &gt;85%
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DISTANCE -->
+
+                    <div
+                        class="sensor-card"
+                        data-sensor="distance"
+                    >
+
+                        <div class="sensor-top">
+
+                            <div>
+
+                                <div class="sensor-category">
+                                    HC-SR04
+                                </div>
+
+                                <div class="sensor-name">
+                                    Distance
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="distance-badge"
+                            >
+                                UNKNOWN
+                            </span>
+
+                        </div>
+
+
+                        <div class="sensor-value">
+
+                            <span
+                                id="distance-value"
+                            >
+                                --
+                            </span>
+
+                            <small>
+                                cm
+                            </small>
+
+                        </div>
+
+
+                        <div class="meter">
+
+                            <div
+                                class="meter-fill"
+                                id="distance-meter"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="sensor-description">
+
+                            <span>
+                                Warning 10–20 cm
+                            </span>
+
+                            <span>
+                                Critical ≤10 cm
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- RPM -->
+
+                    <div
+                        class="sensor-card"
+                        data-sensor="rpm"
+                    >
+
+                        <div class="sensor-top">
+
+                            <div>
+
+                                <div class="sensor-category">
+                                    A3144
+                                </div>
+
+                                <div class="sensor-name">
+                                    Motor RPM
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="rpm-badge"
+                            >
+                                UNKNOWN
+                            </span>
+
+                        </div>
+
+
+                        <div class="sensor-value">
+
+                            <span
+                                id="rpm-value"
+                            >
+                                --
+                            </span>
+
+                            <small>
+                                RPM
+                            </small>
+
+                        </div>
+
+
+                        <div class="meter">
+
+                            <div
+                                class="meter-fill"
+                                id="rpm-meter"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="sensor-description">
+
+                            <span>
+                                Normal ≥180 RPM
+                            </span>
+
+                            <span>
+                                Hall sensor
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MOTION -->
+
+                    <div
+                        class="sensor-card"
+                        data-sensor="motion"
+                    >
+
+                        <div class="sensor-top">
+
+                            <div>
+
+                                <div class="sensor-category">
+                                    PIR
+                                </div>
+
+                                <div class="sensor-name">
+                                    Motion
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="motion-badge"
+                            >
+                                UNKNOWN
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="sensor-value"
+                            id="motion-value"
+                        >
+                            --
+                        </div>
+
+
+                        <div class="meter">
+
+                            <div
+                                class="meter-fill"
+                                id="motion-meter"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="sensor-description">
+
+                            <span>
+                                Digital detection
+                            </span>
+
+                            <span>
+                                Duration matters
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SOUND -->
+
+                    <div
+                        class="sensor-card"
+                        data-sensor="sound"
+                    >
+
+                        <div class="sensor-top">
+
+                            <div>
+
+                                <div class="sensor-category">
+                                    LM393
+                                </div>
+
+                                <div class="sensor-name">
+                                    Sound Event
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="badge unknown"
+                                id="sound-badge"
+                            >
+                                UNKNOWN
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="sensor-value"
+                            id="sound-value"
+                        >
+                            --
+                        </div>
+
+
+                        <div class="meter">
+
+                            <div
+                                class="meter-fill"
+                                id="sound-meter"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="sensor-description">
+
+                            <span>
+                                Threshold detector
+                            </span>
+
+                            <span>
+                                Not calibrated dB
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- INA219 -->
+
+                    <div
+                        class="sensor-card"
+                        data-sensor="ina219"
+                    >
+
+                        <div class="sensor-top">
+
+                            <div>
+
+                                <div class="sensor-category">
+                                    INA219
+                                </div>
+
+                                <div class="sensor-name">
+                                    Auxiliary Electrical
+                                </div>
+
+                            </div>
+
+                            <span
+                                class="badge normal"
+                                id="ina219-badge"
+                            >
+                                INFO
+                            </span>
+
+                        </div>
+
+
+                        <div class="sensor-value">
+
+                            <span
+                                id="ina219-power"
+                            >
+                                --
+                            </span>
+
+                            <small>
+                                mW
+                            </small>
+
+                        </div>
+
+
+                        <div class="sensor-description">
+
+                            <span>
+                                LED + 10KΩ load
+                            </span>
+
+                            <span>
+                                Informational
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 LIVE MONITORING
+            ================================================== -->
+
+            <section
+                class="tab"
+                id="tab-monitoring"
+            >
+
+                <div class="hero-title">
+
+                    <div class="hero-label">
+                        LIVE MONITORING
+                    </div>
+
+                    <h2>
+                        Real-Time Sensor Telemetry
+                    </h2>
+
+                    <p>
+                        Live values received through the MQTT → SQLite
+                        → Flask API pipeline.
+                    </p>
+
+                </div>
+
+
+                <div class="monitor-grid">
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            DHT22 TEMPERATURE
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-temperature"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            °C
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            DHT22 HUMIDITY
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-humidity"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            % RH
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            HC-SR04 DISTANCE
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-distance"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            cm
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            A3144 MOTOR RPM
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-rpm"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            RPM
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            PIR MOTION
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-motion"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            Digital state
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            LM393 SOUND
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-sound"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            Threshold state
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            INA219 VOLTAGE
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-voltage"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            Auxiliary measurement
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="eyebrow">
+                            INA219 CURRENT
+                        </div>
+
+                        <div
+                            class="live-value"
+                            id="monitor-current"
+                        >
+                            --
+                        </div>
+
+                        <div class="live-status">
+                            Auxiliary measurement
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="card"
+                    style="margin-top:18px"
+                >
+
+                    <div class="card-title">
+
+                        <div>
+
+                            <div class="eyebrow">
+                                DATA PIPELINE
+                            </div>
+
+                            <h3>
+                                MQTT → SQLite → Flask API
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pipeline">
+
+                        <div class="pipeline-step">
+                            Arduino
+                        </div>
+
+                        <div class="pipeline-arrow">
+                            →
+                        </div>
+
+                        <div class="pipeline-step">
+                            Mosquitto MQTT
+                        </div>
+
+                    </div>
+
+
+                    <div class="pipeline">
+
+                        <div class="pipeline-step">
+                            telemetry_receiver.py
+                        </div>
+
+                        <div class="pipeline-arrow">
+                            →
+                        </div>
+
+                        <div class="pipeline-step">
+                            SQLite
+                        </div>
+
+                    </div>
+
+
+                    <div class="pipeline">
+
+                        <div class="pipeline-step">
+                            Flask API
+                        </div>
+
+                        <div class="pipeline-arrow">
+                            →
+                        </div>
+
+                        <div class="pipeline-step">
+                            Dashboard
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="card"
+                    style="margin-top:18px"
+                >
+
+                    <div class="card-title">
+
+                        <div>
+
+                            <div class="eyebrow">
+                                RAW TELEMETRY
+                            </div>
+
+                            <h3>
+                                Latest MQTT Record
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <pre
+                        class="raw-box"
+                        id="raw-telemetry"
+                    >Waiting for telemetry...</pre>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 DIAGNOSTICS
+            ================================================== -->
+
+            <section
+                class="tab"
+                id="tab-diagnostics"
+            >
+
+                <div class="hero-title">
+
+                    <div class="hero-label">
+                        DIAGNOSTICS
+                    </div>
+
+                    <h2>
+                        Diagnostic Workspace
+                    </h2>
+
+                    <p>
+                        Rule-based evidence combined with project
+                        knowledge and local Qwen analysis.
+                    </p>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-title">
+
+                        <div>
+
+                            <div class="eyebrow">
+                                RULE-BASED DIAGNOSIS
+                            </div>
+
+                            <h3>
+                                Current Sensor Issues
+                            </h3>
+
+                        </div>
+
+                        <span
+                            class="badge unknown"
+                            id="diagnostic-status"
+                        >
+                            UNKNOWN
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="diagnostic-list"
+                        id="diagnostic-list"
+                    >
+
+                        <div class="diagnostic-item">
+                            Waiting for telemetry...
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="ai-panel">
+
+                    <div class="ai-header">
+
+                        <div>
+
+                            <div class="eyebrow">
+                                RAG + LOCAL LLM
+                            </div>
+
+                            <h3>
+                                Knowledge-Driven Analysis
+                            </h3>
+
+                            <p>
+                                Current telemetry + project knowledge
+                                + rule-based diagnosis.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            class="ai-button"
+                            id="run-ai"
+                        >
+                            Run AI Analysis
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="ai-result"
+                        id="ai-result"
+                    >
+                        Click
+                        <strong>
+                            Run AI Analysis
+                        </strong>
+                        to generate the current diagnosis.
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 TRENDS
+            ================================================== -->
+
+            <section
+                class="tab"
+                id="tab-trends"
+            >
+
+                <div class="hero-title">
+
+                    <div class="hero-label">
+                        TRENDS &amp; ANALYTICS
+                    </div>
+
+                    <h2>
+                        Telemetry History
+                    </h2>
+
+                    <p>
+                        Recent sensor history collected in SQLite.
+                    </p>
+
+                </div>
+
+
+                <div class="grid-3">
+
+                    <div class="card">
+
+                        <div class="eyebrow">
+                            TEMPERATURE
+                        </div>
+
+                        <h3 id="average-temperature">
+                            --
+                        </h3>
+
+                        <p class="live-status">
+                            Average °C
+                        </p>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <div class="eyebrow">
+                            HUMIDITY
+                        </div>
+
+                        <h3 id="average-humidity">
+                            --
+                        </h3>
+
+                        <p class="live-status">
+                            Average % RH
+                        </p>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <div class="eyebrow">
+                            RPM
+                        </div>
+
+                        <h3 id="average-rpm">
+                            --
+                        </h3>
+
+                        <p class="live-status">
+                            Average RPM
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="grid-2"
+                    style="margin-top:18px"
+                >
+
+                    <div class="card">
+
+                        <div class="card-title">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    TREND
+                                </div>
+
+                                <h3>
+                                    Temperature
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="chart"
+                            id="temperature-chart"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <div class="card-title">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    TREND
+                                </div>
+
+                                <h3>
+                                    Humidity
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="chart"
+                            id="humidity-chart"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <div class="card-title">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    TREND
+                                </div>
+
+                                <h3>
+                                    Distance
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="chart"
+                            id="distance-chart"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="card">
+
+                        <div class="card-title">
+
+                            <div>
+
+                                <div class="eyebrow">
+                                    TREND
+                                </div>
+
+                                <h3>
+                                    Motor RPM
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="chart"
+                            id="rpm-chart"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 EVENTS
+            ================================================== -->
+
+            <section
+                class="tab"
+                id="tab-events"
+            >
+
+                <div class="hero-title">
+
+                    <div class="hero-label">
+                        EVENTS
+                    </div>
+
+                    <h2>
+                        Events &amp; Fault History
+                    </h2>
+
+                    <p>
+                        Historical telemetry and rule-based events.
+                    </p>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="toolbar">
+
+                        <input
+                            type="text"
+                            id="event-search"
+                            placeholder="Search events..."
+                        >
+
+
+                        <div class="filter-buttons">
+
+                            <button
+                                class="filter-button active"
+                                data-filter="all"
+                            >
+                                All
+                            </button>
+
+                            <button
+                                class="filter-button"
+                                data-filter="warning"
+                            >
+                                Warning
+                            </button>
+
+                            <button
+                                class="filter-button"
+                                data-filter="critical"
+                            >
+                                Critical
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Timestamp</th>
+                                    <th>Device</th>
+                                    <th>Temperature</th>
+                                    <th>Humidity</th>
+                                    <th>Distance</th>
+                                    <th>Sound</th>
+                                    <th>Motion</th>
+                                    <th>RPM</th>
+                                    <th>Faults</th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody
+                                id="events-body"
+                            >
+
+                                <tr>
+
+                                    <td colspan="9">
+                                        Waiting for telemetry...
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 KNOWLEDGE
+            ================================================== -->
+
+            <section
+                class="tab"
+                id="tab-knowledge"
+            >
+
+                <div class="hero-title">
+
+                    <div class="hero-label">
+                        KNOWLEDGE BASE
+                    </div>
+
+                    <h2>
+                        Project Knowledge
+                    </h2>
+
+                    <p>
+                        Diagnostic knowledge used by the RAG engine.
+                    </p>
+
+                </div>
+
+
+                <div class="toolbar">
+
+                    <input
+                        type="text"
+                        id="knowledge-search"
+                        placeholder="Search project knowledge..."
+                    >
+
+                </div>
+
+
+                <div
+                    class="knowledge-grid"
+                    id="knowledge-grid"
+                >
+
+                    <div class="card">
+                        Loading knowledge...
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     SENSOR MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="sensor-modal"
+>
+
+    <div class="modal-box">
+
+        <button
+            class="modal-close"
+            onclick="closeModal('sensor-modal')"
+        >
+            ×
+        </button>
+
+        <div
+            class="eyebrow"
+            id="sensor-modal-category"
+        >
+            SENSOR
+        </div>
+
+        <h2
+            id="sensor-modal-title"
+        >
+            Sensor
+        </h2>
+
+        <p
+            id="sensor-modal-value"
+        >
+            --
+        </p>
+
+        <p
+            id="sensor-modal-description"
+        >
+            --
+        </p>
+
+        <p
+            id="sensor-modal-diagnostic"
+        >
+            --
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     KNOWLEDGE MODAL
+========================================================= -->
+
+<div
+    class="modal"
+    id="knowledge-modal"
+>
+
+    <div class="modal-box">
+
+        <button
+            class="modal-close"
+            onclick="closeModal('knowledge-modal')"
+        >
+            ×
+        </button>
+
+        <div
+            class="eyebrow"
+            id="knowledge-modal-category"
+        >
+            PROJECT KNOWLEDGE
+        </div>
+
+        <h2
+            id="knowledge-modal-title"
+        >
+            Knowledge
+        </h2>
+
+        <p
+            id="knowledge-modal-content"
+        >
+            --
+        </p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* ========================================================
+       STATE
+    ======================================================== */
+
+    let latest = null;
+    let health = null;
+    let history = [];
+    let knowledge = [];
+
+    let eventFilter = "all";
+
+    const REFRESH_MS = 2000;
+
+
+    /* ========================================================
+       HELPERS
+    ======================================================== */
+
+    function el(id) {
+        return document.getElementById(id);
+    }
+
+
+    function number(value) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+            return null;
+        }
+
+        const n = Number(value);
+
+        return Number.isFinite(n)
+            ? n
+            : null;
+    }
+
+
+    function fmt(
+        value,
+        decimals = 2
+    ) {
+
+        const n = number(value);
+
+        if (n === null) {
+            return "--";
+        }
+
+        return n.toFixed(decimals);
+    }
+
+
+    function truth(value) {
+
+        if (
+            value === true ||
+            value === 1 ||
+            value === "1" ||
+            value === "true" ||
+            value === "TRUE" ||
+            value === "HIGH" ||
+            value === "ACTIVE" ||
+            value === "DETECTED"
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    function escapeHTML(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value ?? "";
+
+        return div.innerHTML;
+    }
+
+
+    function stateClass(state) {
+
+        const s =
+            String(
+                state || "unknown"
+            ).toLowerCase();
+
+        if (s === "critical") {
+            return "critical";
+        }
+
+        if (s === "warning") {
+            return "warning";
+        }
+
+        if (s === "normal") {
+            return "normal";
+        }
+
+        return "unknown";
+    }
+
+
+    function setText(
+        id,
+        value
+    ) {
+
+        const target = el(id);
+
+        if (target) {
+            target.textContent = value;
+        }
+    }
+
+
+    function setBadge(
+        id,
+        state
+    ) {
+
+        const target = el(id);
+
+        if (!target) {
+            return;
+        }
+
+        const cls =
+            stateClass(state);
+
+        target.className =
+            "badge " + cls;
+
+        target.textContent =
+            String(
+                state || "UNKNOWN"
+            ).toUpperCase();
+    }
+
+
+    function meter(
+        id,
+        value,
+        max,
+        inverse = false
+    ) {
+
+        const target = el(id);
+
+        if (!target) {
+            return;
+        }
+
+        const n = number(value);
+
+        if (
+            n === null ||
+            max <= 0
+        ) {
+            target.style.width = "0%";
+            return;
+        }
+
+        let percent =
+            (
+                n / max
+            ) * 100;
+
+        percent =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    percent
+                )
+            );
+
+        if (inverse) {
+            percent =
+                100 - percent;
+        }
+
+        target.style.width =
+            percent + "%";
+    }
+
+
+    /* ========================================================
+       HEALTH
+    ======================================================== */
+
+    function updateHealth() {
+
+        if (!health) {
+            return;
+        }
+
+        const score =
+            number(
+                health.score
+            ) ?? 0;
+
+        const status =
+            health.status ||
+            "UNKNOWN";
+
+        const issues =
+            Array.isArray(
+                health.issues
+            )
+                ? health.issues
+                : [];
+
+        const quality =
+            health.data_quality ||
+            {};
+
+
+        setText(
+            "health-score",
+            Math.round(score)
+        );
+
+
+        setText(
+            "health-issues",
+            issues.length
+        );
+
+
+        setText(
+            "health-quality",
+            quality.score !== undefined
+                ? quality.score + "%"
+                : "--"
+        );
+
+
+        setBadge(
+            "overview-health-badge",
+            status
+        );
+
+
+        setBadge(
+            "diagnostic-status",
+            status
+        );
+
+
+        setBadge(
+            "quality-badge",
+            quality.score !== undefined
+                ? (
+                    quality.score >= 90
+                        ? "GOOD"
+                        : quality.score >= 70
+                            ? "FAIR"
+                            : "LOW"
+                )
+                : "--"
+        );
+
+
+        const ring =
+            el("health-ring");
+
+        if (ring) {
+
+            ring.style.setProperty(
+                "--health",
+                score + "%"
+            );
+
+        }
+
+
+        let title =
+            "System Healthy";
+
+        let message =
+            "Current telemetry is within the documented project thresholds.";
+
+
+        if (status === "WARNING") {
+
+            title =
+                "Attention Required";
+
+            message =
+                "One or more monitored conditions are in the warning range.";
+
+        }
+
+
+        if (status === "CRITICAL") {
+
+            title =
+                "Critical Condition";
+
+            message =
+                "One or more critical conditions or explicit sensor faults are present.";
+
+        }
+
+
+        setText(
+            "health-title",
+            title
+        );
+
+
+        setText(
+            "health-message",
+            message
+        );
+
+
+        const qualityScore =
+            number(
+                quality.score
+            );
+
+        meter(
+            "quality-meter",
+            qualityScore,
+            100
+        );
+
+
+        updateDiagnosticList(
+            issues
+        );
+    }
+
+
+    /* ========================================================
+       TELEMETRY
+    ======================================================== */
+
+    function updateTelemetry() {
+
+        if (!latest) {
+            return;
+        }
+
+
+        /* HEADER */
+
+        setText(
+            "header-device",
+            latest.device_id ||
+            "--"
+        );
+
+
+        setText(
+            "header-time",
+            latest.timestamp ||
+            "--"
+        );
+
+
+        /* TEMPERATURE */
+
+        const temperature =
+            number(
+                latest.temperature
+            );
+
+        setText(
+            "temperature-value",
+            fmt(
+                temperature,
+                1
+            )
+        );
+
+
+        let temperatureState =
+            latest.temperature_status ||
+            "UNKNOWN";
+
+        if (
+            temperature === null
+        ) {
+            temperatureState =
+                "UNKNOWN";
+        } else if (
+            temperature > 45
+        ) {
+            temperatureState =
+                "CRITICAL";
+        } else if (
+            temperature > 35
+        ) {
+            temperatureState =
+                "WARNING";
+        } else {
+            temperatureState =
+                "NORMAL";
+        }
+
+
+        setBadge(
+            "temperature-badge",
+            temperatureState
+        );
+
+
+        meter(
+            "temperature-meter",
+            temperature,
+            60
+        );
+
+
+        /* HUMIDITY */
+
+        const humidity =
+            number(
+                latest.humidity
+            );
+
+        setText(
+            "humidity-value",
+            fmt(
+                humidity,
+                1
+            )
+        );
+
+
+        let humidityState =
+            latest.humidity_status ||
+            "UNKNOWN";
+
+        if (
+            humidity === null
+        ) {
+            humidityState =
+                "UNKNOWN";
+        } else if (
+            humidity > 85
+        ) {
+            humidityState =
+                "CRITICAL";
+        } else if (
+            humidity > 70
+        ) {
+            humidityState =
+                "WARNING";
+        } else {
+            humidityState =
+                "NORMAL";
+        }
+
+
+        setBadge(
+            "humidity-badge",
+            humidityState
+        );
+
+
+        meter(
+            "humidity-meter",
+            humidity,
+            100
+        );
+
+
+        /* DISTANCE */
+
+        const distance =
+            number(
+                latest.distance
+            );
+
+        setText(
+            "distance-value",
+            fmt(
+                distance,
+                1
+            )
+        );
+
+
+        let distanceState =
+            "UNKNOWN";
+
+        if (
+            distance !== null
+        ) {
+
+            distanceState =
+                distance <= 10
+                    ? "CRITICAL"
+                    : distance <= 20
+                        ? "WARNING"
+                        : "NORMAL";
+        }
+
+
+        if (
+            latest.distance_status
+        ) {
+
+            distanceState =
+                latest.distance_status;
+        }
+
+
+        setBadge(
+            "distance-badge",
+            distanceState
+        );
+
+
+        meter(
+            "distance-meter",
+            distance,
+            100,
+            true
+        );
+
+
+        /* RPM */
+
+        const rpm =
+            number(
+                latest.rpm
+            );
+
+        setText(
+            "rpm-value",
+            fmt(
+                rpm,
+                0
+            )
+        );
+
+
+        let rpmState =
+            "UNKNOWN";
+
+        if (
+            rpm !== null
+        ) {
+
+            rpmState =
+                rpm < 180
+                    ? "WARNING"
+                    : "NORMAL";
+        }
+
+
+        if (
+            latest.rpm_status
+        ) {
+
+            rpmState =
+                latest.rpm_status;
+        }
+
+
+        setBadge(
+            "rpm-badge",
+            rpmState
+        );
+
+
+        meter(
+            "rpm-meter",
+            rpm,
+            250
+        );
+
+
+        /* MOTION */
+
+        const motion =
+            truth(
+                latest.motion
+            );
+
+        setText(
+            "motion-value",
+            motion
+                ? "DETECTED"
+                : "NONE"
+        );
+
+
+        let motionState =
+            "NORMAL";
+
+
+        if (
+            latest.pir_duration >= 30
+        ) {
+
+            motionState =
+                "CRITICAL";
+
+        } else if (
+            latest.pir_duration >= 10
+        ) {
+
+            motionState =
+                "WARNING";
+        }
+
+
+        setBadge(
+            "motion-badge",
+            motionState
+        );
+
+
+        meter(
+            "motion-meter",
+            motion ? 1 : 0,
+            1
+        );
+
+
+        /* SOUND */
+
+        const sound =
+            truth(
+                latest.sound
+            );
+
+        setText(
+            "sound-value",
+            sound
+                ? "ACTIVE"
+                : "NORMAL"
+        );
+
+
+        let soundState =
+            "NORMAL";
+
+
+        if (
+            latest.sound_duration >= 5
+        ) {
+
+            soundState =
+                "CRITICAL";
+
+        } else if (
+            latest.sound_duration >= 2
+        ) {
+
+            soundState =
+                "WARNING";
+        }
+
+
+        setBadge(
+            "sound-badge",
+            soundState
+        );
+
+
+        meter(
+            "sound-meter",
+            sound ? 1 : 0,
+            1
+        );
+
+
+        /* INA219 */
+
+        const voltage =
+            number(
+                latest.voltage
+            );
+
+        const current =
+            number(
+                latest.current
+            );
+
+        const power =
+            number(
+                latest.power
+            );
+
+
+        setText(
+            "ina219-power",
+            fmt(
+                power,
+                2
+            )
+        );
+
+
+        setBadge(
+            "ina219-badge",
+            latest.ina219_fault
+                ? "CRITICAL"
+                : "INFO"
+        );
+
+
+        /* MOTOR */
+
+        const motorRunning =
+            truth(
+                latest.motor_running
+            );
+
+
+        setText(
+            "motor-state",
+            motorRunning
+                ? "RUNNING"
+                : "STOPPED"
+        );
+
+
+        setText(
+            "motor-detail",
+            motorRunning
+                ? "L293D controlled motor is commanded ON."
+                : "Motor is not commanded ON."
+        );
+
+
+        setText(
+            "overview-rpm",
+            fmt(
+                rpm,
+                0
+            )
+        );
+
+
+        setText(
+            "overview-voltage",
+            voltage === null
+                ? "--"
+                : fmt(
+                    voltage,
+                    3
+                ) + " V"
+        );
+
+
+        setText(
+            "overview-current",
+            current === null
+                ? "--"
+                : fmt(
+                    current,
+                    3
+                ) + " mA"
+        );
+
+
+        setBadge(
+            "motor-badge",
+            latest.a3144_fault
+                ? "CRITICAL"
+                : (
+                    motorRunning &&
+                    rpm !== null &&
+                    rpm < 180
+                )
+                    ? "WARNING"
+                    : "NORMAL"
+        );
+
+
+        /* LIVE MONITORING */
+
+        setText(
+            "monitor-temperature",
+            temperature === null
+                ? "--"
+                : fmt(
+                    temperature,
+                    1
+                ) + " °C"
+        );
+
+
+        setText(
+            "monitor-humidity",
+            humidity === null
+                ? "--"
+                : fmt(
+                    humidity,
+                    1
+                ) + " % RH"
+        );
+
+
+        setText(
+            "monitor-distance",
+            distance === null
+                ? "--"
+                : fmt(
+                    distance,
+                    1
+                ) + " cm"
+        );
+
+
+        setText(
+            "monitor-rpm",
+            rpm === null
+                ? "--"
+                : fmt(
+                    rpm,
+                    0
+                ) + " RPM"
+        );
+
+
+        setText(
+            "monitor-motion",
+            motion
+                ? "DETECTED"
+                : "NONE"
+        );
+
+
+        setText(
+            "monitor-sound",
+            sound
+                ? "ACTIVE"
+                : "NORMAL"
+        );
+
+
+        setText(
+            "monitor-voltage",
+            voltage === null
+                ? "--"
+                : fmt(
+                    voltage,
+                    3
+                ) + " V"
+        );
+
+
+        setText(
+            "monitor-current",
+            current === null
+                ? "--"
+                : fmt(
+                    current,
+                    3
+                ) + " mA"
+        );
+
+
+        /* RAW TELEMETRY */
+
+        const raw =
+            el(
+                "raw-telemetry"
+            );
+
+        if (raw) {
+
+            raw.textContent =
+                JSON.stringify(
+                    latest,
+                    null,
+                    2
+                );
+        }
+    }
+
+
+    /* ========================================================
+       DIAGNOSTICS
+    ======================================================== */
+
+    function updateDiagnosticList(
+        issues
+    ) {
+
+        const container =
+            el(
+                "diagnostic-list"
+            );
+
+        if (!container) {
+            return;
+        }
+
+
+        if (
+            !issues.length
+        ) {
+
+            container.innerHTML = `
+                <div class="diagnostic-item">
+                    <strong>
+                        No current warning or critical condition
+                    </strong>
+
+                    <span>
+                        All monitored values are currently
+                        within the documented project thresholds.
+                    </span>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            issues
+                .map(
+                    issue => {
+
+                        const severity =
+                            stateClass(
+                                issue.severity
+                            );
+
+                        return `
+                            <div
+                                class="diagnostic-item ${severity}"
+                            >
+
+                                <strong>
+                                    ${escapeHTML(
+                                        issue.sensor
+                                    )}
+                                    —
+                                    ${escapeHTML(
+                                        issue.parameter
+                                    )}
+                                </strong>
+
+                                <span>
+                                    ${escapeHTML(
+                                        issue.message
+                                    )}
+
+                                    <br>
+
+                                    <strong>
+                                        ${escapeHTML(
+                                            issue.severity
+                                        )}
+                                    </strong>
+                                </span>
+
+                            </div>
+                        `;
+                    }
+                )
+                .join("");
+    }
+
+
+    /* ========================================================
+       LATEST
+    ======================================================== */
+
+    async function loadLatest() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/latest",
+                    {
+                        cache:
+                            "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !data.available
+            ) {
+
+                latest = null;
+
+                health = null;
+
+                setText(
+                    "connection-text",
+                    "Waiting for telemetry..."
+                );
+
+                return;
+            }
+
+
+            latest =
+                data.telemetry ||
+                data;
+
+
+            health =
+                data.health ||
+                null;
+
+
+            updateTelemetry();
+
+            updateHealth();
+
+
+            el(
+                "connection-dot"
+            )?.classList.add(
+                "online"
+            );
+
+
+            el(
+                "header-dot"
+            )?.classList.add(
+                "online"
+            );
+
+
+            setText(
+                "connection-text",
+                "Connected • MQTT → SQLite → API"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Latest telemetry error:",
+                error
+            );
+
+
+            el(
+                "connection-dot"
+            )?.classList.remove(
+                "online"
+            );
+
+
+            el(
+                "header-dot"
+            )?.classList.remove(
+                "online"
+            );
+
+
+            setText(
+                "connection-text",
+                "Backend unavailable"
+            );
+        }
+    }
+
+
+    /* ========================================================
+       HISTORY
+    ======================================================== */
+
+    async function loadHistory() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/history?limit=100",
+                    {
+                        cache:
+                            "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            history =
+                Array.isArray(data)
+                    ? data
+                    : [];
+
+
+            renderEvents();
+
+            renderCharts();
+
+
+        } catch (error) {
+
+            console.error(
+                "History error:",
+                error
+            );
+        }
+    }
+
+
+    /* ========================================================
+       EVENTS
+    ======================================================== */
+
+    function renderEvents() {
+
+        const body =
+            el(
+                "events-body"
+            );
+
+        if (!body) {
+            return;
+        }
+
+
+        const search =
+            (
+                el(
+                    "event-search"
+                )?.value ||
+                ""
+            ).toLowerCase();
+
+
+        const rows =
+            history.filter(
+                row => {
+
+                    const faults =
+                        Number(
+                            row.fault_count ||
+                            0
+                        );
+
+
+                    let severity =
+                        "normal";
+
+
+                    const temp =
+                        number(
+                            row.temperature
+                        );
+
+                    const humidity =
+                        number(
+                            row.humidity
+                        );
+
+                    const distance =
+                        number(
+                            row.distance
+                        );
+
+                    const rpm =
+                        number(
+                            row.rpm
+                        );
+
+
+                    if (
+                        faults > 0
+                    ) {
+
+                        severity =
+                            "critical";
+
+                    } else if (
+                        (
+                            temp !== null &&
+                            temp > 35
+                        ) ||
+                        (
+                            humidity !== null &&
+                            humidity > 70
+                        ) ||
+                        (
+                            distance !== null &&
+                            distance <= 20
+                        ) ||
+                        (
+                            rpm !== null &&
+                            rpm < 180
+                        )
+                    ) {
+
+                        severity =
+                            "warning";
+                    }
+
+
+                    const searchable =
+                        JSON.stringify(
+                            row
+                        ).toLowerCase();
+
+
+                    if (
+                        search &&
+                        !searchable.includes(
+                            search
+                        )
+                    ) {
+
+                        return false;
+                    }
+
+
+                    if (
+                        eventFilter !== "all" &&
+                        severity !== eventFilter
+                    ) {
+
+                        return false;
+                    }
+
+
+                    return true;
+                }
+            );
+
+
+        if (!rows.length) {
+
+            body.innerHTML = `
+                <tr>
+                    <td colspan="9">
+                        No matching events.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        body.innerHTML =
+            rows
+                .map(
+                    row => `
+                        <tr>
+
+                            <td>
+                                ${escapeHTML(
+                                    row.timestamp ||
+                                    "--"
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(
+                                    row.device_id ||
+                                    "--"
+                                )}
+                            </td>
+
+                            <td>
+                                ${
+                                    row.temperature == null
+                                        ? "--"
+                                        :
+                                        fmt(
+                                            row.temperature,
+                                            1
+                                        ) +
+                                        " °C"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    row.humidity == null
+                                        ? "--"
+                                        :
+                                        fmt(
+                                            row.humidity,
+                                            1
+                                        ) +
+                                        " %"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    row.distance == null
+                                        ? "--"
+                                        :
+                                        fmt(
+                                            row.distance,
+                                            1
+                                        ) +
+                                        " cm"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    truth(
+                                        row.sound
+                                    )
+                                        ? "ACTIVE"
+                                        : "NORMAL"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    truth(
+                                        row.motion
+                                    )
+                                        ? "DETECTED"
+                                        : "NONE"
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    row.rpm == null
+                                        ? "--"
+                                        :
+                                        fmt(
+                                            row.rpm,
+                                            0
+                                        )
+                                }
+                            </td>
+
+                            <td>
+                                ${
+                                    row.fault_count ??
+                                    0
+                                }
+                            </td>
+
+                        </tr>
+                    `
+                )
+                .join("");
+    }
+
+
+    /* ========================================================
+       CHARTS
+    ======================================================== */
+
+    function renderChart(
+        id,
+        values
+    ) {
+
+        const container =
+            el(id);
+
+        if (!container) {
+            return;
+        }
+
+
+        const points =
+            values
+                .map(number)
+                .filter(
+                    value =>
+                        value !== null
+                );
+
+
+        if (
+            points.length < 2
+        ) {
+
+            container.innerHTML = `
+                <div
+                    style="
+                        height:100%;
+                        display:grid;
+                        place-items:center;
+                        color:#718096;
+                        font-size:11px;
+                    "
+                >
+                    Waiting for more telemetry history...
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const width = 700;
+        const height = 250;
+        const padding = 28;
+
+
+        const min =
+            Math.min(
+                ...points
+            );
+
+
+        const max =
+            Math.max(
+                ...points
+            );
+
+
+        const range =
+            max - min || 1;
+
+
+        const coords =
+            points.map(
+                (
+                    value,
+                    index
+                ) => {
+
+                    const x =
+                        padding +
+                        (
+                            index /
+                            (
+                                points.length -
+                                1
+                            )
+                        ) *
+                        (
+                            width -
+                            padding * 2
+                        );
+
+
+                    const y =
+                        height -
+                        padding -
+                        (
+                            (
+                                value -
+                                min
+                            ) /
+                            range
+                        ) *
+                        (
+                            height -
+                            padding * 2
+                        );
+
+
+                    return {
+                        x,
+                        y
+                    };
+                }
+            );
+
+
+        const path =
+            coords
+                .map(
+                    (
+                        point,
+                        index
+                    ) =>
+                        (
+                            index === 0
+                                ? "M"
+                                : "L"
+                        ) +
+                        ` ${point.x} ${point.y}`
+                )
+                .join(" ");
+
+
+        const dots =
+            coords
+                .map(
+                    point =>
+                        `
+                            <circle
+                                class="chart-point"
+                                cx="${point.x}"
+                                cy="${point.y}"
+                                r="3"
+                            />
+                        `
+                )
+                .join("");
+
+
+        container.innerHTML = `
+            <svg
+                viewBox="0 0 ${width} ${height}"
+                preserveAspectRatio="none"
+            >
+
+                <line
+                    class="chart-grid"
+                    x1="${padding}"
+                    y1="55"
+                    x2="${width - padding}"
+                    y2="55"
+                />
+
+                <line
+                    class="chart-grid"
+                    x1="${padding}"
+                    y1="125"
+                    x2="${width - padding}"
+                    y2="125"
+                />
+
+                <line
+                    class="chart-grid"
+                    x1="${padding}"
+                    y1="195"
+                    x2="${width - padding}"
+                    y2="195"
+                />
+
+                <path
+                    class="chart-line"
+                    d="${path}"
+                />
+
+                ${dots}
+
+            </svg>
+        `;
+    }
+
+
+    function renderCharts() {
+
+        const chronological =
+            [...history].reverse();
+
+
+        renderChart(
+            "temperature-chart",
+            chronological.map(
+                row =>
+                    row.temperature
+            )
+        );
+
+
+        renderChart(
+            "humidity-chart",
+            chronological.map(
+                row =>
+                    row.humidity
+            )
+        );
+
+
+        renderChart(
+            "distance-chart",
+            chronological.map(
+                row =>
+                    row.distance
+            )
+        );
+
+
+        renderChart(
+            "rpm-chart",
+            chronological.map(
+                row =>
+                    row.rpm
+            )
+        );
+
+
+        function average(
+            values
+        ) {
+
+            const nums =
+                values
+                    .map(number)
+                    .filter(
+                        value =>
+                            value !== null
+                    );
+
+
+            if (!nums.length) {
+                return "--";
+            }
+
+
+            return (
+                nums.reduce(
+                    (
+                        total,
+                        value
+                    ) =>
+                        total + value,
+                    0
+                ) /
+                nums.length
+            ).toFixed(1);
+        }
+
+
+        setText(
+            "average-temperature",
+            average(
+                chronological.map(
+                    row =>
+                        row.temperature
+                )
+            ) +
+            " °C"
+        );
+
+
+        setText(
+            "average-humidity",
+            average(
+                chronological.map(
+                    row =>
+                        row.humidity
+                )
+            ) +
+            " % RH"
+        );
+
+
+        setText(
+            "average-rpm",
+            average(
+                chronological.map(
+                    row =>
+                        row.rpm
+                )
+            ) +
+            " RPM"
+        );
+    }
+
+
+    /* ========================================================
+       KNOWLEDGE
+    ======================================================== */
+
+    async function loadKnowledge() {
+
+        const grid =
+            el(
+                "knowledge-grid"
+            );
+
+        if (!grid) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/knowledge",
+                    {
+                        cache:
+                            "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            knowledge =
+                Array.isArray(data)
+                    ? data
+                    : [];
+
+
+            renderKnowledge();
+
+
+        } catch (error) {
+
+            console.error(
+                "Knowledge error:",
+                error
+            );
+
+
+            grid.innerHTML = `
+                <div class="card">
+                    Could not load project knowledge.
+                </div>
+            `;
+        }
+    }
+
+
+    function renderKnowledge() {
+
+        const grid =
+            el(
+                "knowledge-grid"
+            );
+
+        if (!grid) {
+            return;
+        }
+
+
+        const search =
+            (
+                el(
+                    "knowledge-search"
+                )?.value ||
+                ""
+            ).toLowerCase();
+
+
+        const filtered =
+            knowledge.filter(
+                item =>
+                    JSON.stringify(
+                        item
+                    )
+                        .toLowerCase()
+                        .includes(
+                            search
+                        )
+            );
+
+
+        if (!filtered.length) {
+
+            grid.innerHTML = `
+                <div class="card">
+                    No matching knowledge found.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        grid.innerHTML =
+            filtered
+                .map(
+                    (
+                        item,
+                        index
+                    ) => {
+
+                        const title =
+                            item.title ||
+                            item.name ||
+                            "Knowledge " +
+                            (
+                                index + 1
+                            );
+
+
+                        const content =
+                            item.content ||
+                            item.description ||
+                            item.text ||
+                            "";
+
+
+                        const category =
+                            item.sensor ||
+                            item.category ||
+                            "SYSTEM";
+
+
+                        return `
+                            <article
+                                class="knowledge-card"
+                                data-index="${index}"
+                            >
+
+                                <div
+                                    class="knowledge-icon"
+                                >
+                                    ${
+                                        index % 2
+                                            ? "⌁"
+                                            : "≋"
+                                    }
+                                </div>
+
+                                <div class="eyebrow">
+                                    ${escapeHTML(
+                                        category
+                                    )}
+                                </div>
+
+                                <h3>
+                                    ${escapeHTML(
+                                        title
+                                    )}
+                                </h3>
+
+                                <p>
+                                    ${escapeHTML(
+                                        content
+                                    )}
+                                </p>
+
+                            </article>
+                        `;
+                    }
+                )
+                .join("");
+
+
+        grid
+            .querySelectorAll(
+                ".knowledge-card"
+            )
+            .forEach(
+                card => {
+
+                    card.addEventListener(
+                        "click",
+                        () => {
+
+                            const index =
+                                Number(
+                                    card.dataset.index
+                                );
+
+
+                            openKnowledge(
+                                filtered[
+                                    index
+                                ]
+                            );
+                        }
+                    );
+
+                }
+            );
+    }
+
+
+    function openKnowledge(
+        item
+    ) {
+
+        setText(
+            "knowledge-modal-category",
+            item.sensor ||
+            item.category ||
+            "PROJECT KNOWLEDGE"
+        );
+
+
+        setText(
+            "knowledge-modal-title",
+            item.title ||
+            item.name ||
+            "Knowledge"
+        );
+
+
+        setText(
+            "knowledge-modal-content",
+            item.content ||
+            item.description ||
+            item.text ||
+            ""
+        );
+
+
+        el(
+            "knowledge-modal"
+        ).classList.add(
+            "open"
+        );
+    }
+
+
+    /* ========================================================
+       SENSOR MODAL
+    ======================================================== */
+
+    function openSensor(
+        sensor
+    ) {
+
+        if (!latest) {
+            return;
+        }
+
+
+        const definitions = {
+
+            temperature: {
+                category: "DHT22",
+                title: "Temperature",
+                value:
+                    `${fmt(
+                        latest.temperature,
+                        1
+                    )} °C`,
+                description:
+                    "DHT22 environmental temperature measurement.",
+                diagnostic:
+                    "Warning above 35 °C and critical above 45 °C."
+            },
+
+
+            humidity: {
+                category: "DHT22",
+                title: "Humidity",
+                value:
+                    `${fmt(
+                        latest.humidity,
+                        1
+                    )} % RH`,
+                description:
+                    "DHT22 environmental humidity measurement.",
+                diagnostic:
+                    "Warning above 70 % RH and critical above 85 % RH."
+            },
+
+
+            distance: {
+                category: "HC-SR04",
+                title: "Distance",
+                value:
+                    `${fmt(
+                        latest.distance,
+                        1
+                    )} cm`,
+                description:
+                    "HC-SR04 ultrasonic distance measurement.",
+                diagnostic:
+                    "The dashboard uses the Arduino telemetry value and status."
+            },
+
+
+            rpm: {
+                category: "A3144",
+                title: "Motor RPM",
+                value:
+                    `${fmt(
+                        latest.rpm,
+                        0
+                    )} RPM`,
+                description:
+                    "A3144 Hall-effect pulses are used to calculate motor RPM.",
+                diagnostic:
+                    "RPM below 180 while the motor is running is a warning."
+            },
+
+
+            motion: {
+                category: "PIR",
+                title: "Motion",
+                value:
+                    truth(
+                        latest.motion
+                    )
+                        ? "DETECTED"
+                        : "NONE",
+                description:
+                    "PIR is a digital motion detector.",
+                diagnostic:
+                    "Persistent motion duration is used by the rule-based diagnostic layer."
+            },
+
+
+            sound: {
+                category: "LM393",
+                title: "Sound Event",
+                value:
+                    truth(
+                        latest.sound
+                    )
+                        ? "ACTIVE"
+                        : "NORMAL",
+                description:
+                    "LM393 is a digital sound threshold detector, not a calibrated dB meter.",
+                diagnostic:
+                    "Sound duration is considered by the diagnostic layer."
+            },
+
+
+            ina219: {
+                category: "INA219",
+                title: "Auxiliary Electrical Measurement",
+                value:
+                    `${fmt(
+                        latest.power,
+                        2
+                    )} mW`,
+                description:
+                    "INA219 measures the small LED + 10KΩ resistor load.",
+                diagnostic:
+                    "Do not interpret this measurement as motor current or 12 V motor supply voltage."
+            }
+
+        };
+
+
+        const config =
+            definitions[
+                sensor
+            ];
+
+
+        if (!config) {
+            return;
+        }
+
+
+        setText(
+            "sensor-modal-category",
+            config.category
+        );
+
+
+        setText(
+            "sensor-modal-title",
+            config.title
+        );
+
+
+        setText(
+            "sensor-modal-value",
+            config.value
+        );
+
+
+        setText(
+            "sensor-modal-description",
+            config.description
+        );
+
+
+        setText(
+            "sensor-modal-diagnostic",
+            config.diagnostic
+        );
+
+
+        el(
+            "sensor-modal"
+        ).classList.add(
+            "open"
+        );
+    }
+
+
+    function closeModal(
+        id
+    ) {
+
+        const modal =
+            el(id);
+
+        if (modal) {
+
+            modal.classList.remove(
+                "open"
+            );
+        }
+    }
+
+
+    /* ========================================================
+       AI
+    ======================================================== */
+
+    async function runAI() {
+
+        const button =
+            el("run-ai");
+
+        const result =
+            el("ai-result");
+
+
+        button.disabled =
+            true;
+
+        button.textContent =
+            "Analyzing...";
+
+
+        result.innerHTML = `
+            Retrieving project knowledge,
+            evaluating current sensor telemetry,
+            and generating the local RAG + LLM diagnosis...
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/ai-diagnosis",
+                    {
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({})
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                data.success === false
+            ) {
+
+                throw new Error(
+                    data.error ||
+                    "AI diagnosis failed."
+                );
+            }
+
+
+            const text =
+                data.answer ||
+                data.diagnosis ||
+                "No diagnosis returned.";
+
+
+            result.innerHTML =
+                formatAI(text);
+
+
+        } catch (error) {
+
+            console.error(
+                "AI error:",
+                error
+            );
+
+
+            result.innerHTML = `
+                <strong>
+                    AI analysis failed.
+                </strong>
+
+                <br><br>
+
+                ${escapeHTML(
+                    error.message
+                )}
+
+                <br><br>
+
+                Confirm that LM Studio is running and
+                the configured Qwen model is loaded.
+            `;
+
+
+        } finally {
+
+            button.disabled =
+                false;
+
+            button.textContent =
+                "Run AI Analysis";
+        }
+    }
+
+
+    function formatAI(
+        text
+    ) {
+
+        let safe =
+            escapeHTML(text);
+
+
+        safe =
+            safe.replace(
+                /^### (.+)$/gm,
+                "<h4>$1</h4>"
+            );
+
+
+        safe =
+            safe.replace(
+                /^## (.+)$/gm,
+                "<h4>$1</h4>"
+            );
+
+
+        safe =
+            safe.replace(
+                /\*\*(.*?)\*\*/g,
+                "<strong>$1</strong>"
+            );
+
+
+        safe =
+            safe.replace(
+                /^\s*[-•]\s+(.+)$/gm,
+                "<li>$1</li>"
+            );
+
+
+        safe =
+            safe.replace(
+                /(<li>.*?<\/li>)/gs,
+                "<ul>$1</ul>"
+            );
+
+
+        safe =
+            safe.replace(
+                /\n/g,
+                "<br>"
+            );
+
+
+        return safe;
+    }
+
+
+    /* ========================================================
+       NAVIGATION
+    ======================================================== */
+
+    function switchTab(
+        name
+    ) {
+
+        document
+            .querySelectorAll(
+                ".nav-button"
+            )
+            .forEach(
+                button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.tab ===
+                        name
+                    );
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                ".tab"
+            )
+            .forEach(
+                section => {
+
+                    section.classList.toggle(
+                        "active",
+                        section.id ===
+                        "tab-" + name
+                    );
+                }
+            );
+
+
+        const titles = {
+
+            overview:
+                "Overview",
+
+            monitoring:
+                "Live Monitoring",
+
+            diagnostics:
+                "Diagnostics",
+
+            trends:
+                "Trends & Analytics",
+
+            events:
+                "Events",
+
+            knowledge:
+                "Knowledge Base"
+        };
+
+
+        setText(
+            "page-title",
+            titles[name] ||
+            "Overview"
+        );
+
+
+        if (
+            name === "trends"
+        ) {
+            renderCharts();
+        }
+
+
+        if (
+            name === "events"
+        ) {
+            renderEvents();
+        }
+
+
+        if (
+            name === "knowledge"
+        ) {
+            loadKnowledge();
+        }
+    }
+
+
+    /* ========================================================
+       EVENT LISTENERS
+    ======================================================== */
+
+    document
+        .querySelectorAll(
+            ".nav-button"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () =>
+                        switchTab(
+                            button.dataset.tab
+                        )
+                );
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".sensor-card"
+        )
+        .forEach(
+            card => {
+
+                card.addEventListener(
+                    "click",
+                    () =>
+                        openSensor(
+                            card.dataset.sensor
+                        )
+                );
+            }
+        );
+
+
+    el(
+        "run-ai"
+    )?.addEventListener(
+        "click",
+        runAI
+    );
+
+
+    el(
+        "event-search"
+    )?.addEventListener(
+        "input",
+        renderEvents
+    );
+
+
+    document
+        .querySelectorAll(
+            ".filter-button"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        document
+                            .querySelectorAll(
+                                ".filter-button"
+                            )
+                            .forEach(
+                                item =>
+                                    item.classList.remove(
+                                        "active"
+                                    )
+                            );
+
+
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        eventFilter =
+                            button.dataset.filter;
+
+
+                        renderEvents();
+                    }
+                );
+            }
+        );
+
+
+    el(
+        "knowledge-search"
+    )?.addEventListener(
+        "input",
+        renderKnowledge
+    );
+
+
+    document
+        .querySelectorAll(
+            ".modal"
+        )
+        .forEach(
+            modal => {
+
+                modal.addEventListener(
+                    "click",
+                    event => {
+
+                        if (
+                            event.target ===
+                            modal
+                        ) {
+
+                            modal.classList.remove(
+                                "open"
+                            );
+                        }
+                    }
+                );
+            }
+        );
+
+
+    /* ========================================================
+       INITIALIZATION
+    ======================================================== */
+
+    async function initialize() {
+
+        await loadLatest();
+
+        await loadHistory();
+
+        await loadKnowledge();
+    }
+
+
+    initialize();
+
+
+    setInterval(
+        async () => {
+
+            await loadLatest();
+
+            await loadHistory();
+
+        },
+        REFRESH_MS
+    );
+
+</script>
+
+</body>
+</html>
