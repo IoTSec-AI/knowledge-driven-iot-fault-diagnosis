@@ -32,14 +32,14 @@ The core design principle is:
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
-│                    IoT SENSING PLATFORM                    │
+│                    IoT SENSING PLATFORM                     │
 │                                                             │
 │  DHT22 ─────── Temperature / Humidity                       │
 │  PIR ───────── Motion                                       │
 │  HC-SR04 ───── Distance                                     │
 │  LM393 ─────── Sound Event                                  │
 │  A3144 ─────── Motor RPM                                    │
-│  INA219 ────── Auxiliary Electrical Load                   │
+│  INA219 ────── Auxiliary Electrical Load                    │
 │  DC Motor ──── Actuator                                     │
 │                                                             │
 │                     Bharat Pi / Controller                  │
